@@ -1,0 +1,18 @@
+# ---- Core Dependencies ----
+python-dotenv==1.0.1
+supabase==2.5.1
+requests==2.32.3
+websockets==12.0
+kucoin-python==1.0.26
+
+# ---- Logging & Utilities ----
+urllib3==2.2.3
+certifi==2025.6.15
+charset-normalizer==3.4.0
+idna==3.10
+
+# ---- Compatibility (Railway/Linux Runtime) ----
+cryptography==43.0.1
+httpx==0.27.2
+# ---- Process control ----
+psutil==6.0.0

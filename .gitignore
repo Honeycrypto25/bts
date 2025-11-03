@@ -1,0 +1,30 @@
+# === Environment ===
+.env
+*.env
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.db
+.DS_Store
+
+# === Virtual Environments ===
+venv/
+env/
+.venv/
+
+# === Logs ===
+logs/
+*.log
+
+# === IDE / OS files ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+Thumbs.db
+
+# === Python build artifacts ===
+build/
+dist/
+*.egg-info/
