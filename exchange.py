@@ -34,19 +34,19 @@ def safe_order(action_func, *args, retries=3, delay=5, **kwargs):
                 return None
 
 # =====================================================
-# 💰 Market SELL (prima acțiune din strategia STB)
+# 💰 Market BUY (prima acțiune din strategia BTS)
 # =====================================================
-def market_sell(client, symbol, amount, strategy_label="STB"):
-    """Plasează un ordin de vânzare MARKET."""
+def market_buy(client, symbol, amount, strategy_label="BTS"):
+    """Plasează un ordin de cumpărare MARKET."""
     def action():
-        order = client.create_market_order(symbol, 'sell', size=str(amount))
+        order = client.create_market_order(symbol, 'buy', size=str(amount))
         return order.get('orderId') or order.get('id')
 
     order_id = safe_order(action)
     if order_id:
-        print(f"[{symbol}][{strategy_label}] 🟠 Market SELL placed (orderId: {order_id})")
+        print(f"[{symbol}][{strategy_label}] 🟢 Market BUY placed (orderId: {order_id})")
     else:
-        print(f"[{symbol}][{strategy_label}] ❌ Market SELL failed after retries.")
+        print(f"[{symbol}][{strategy_label}] ❌ Market BUY failed after retries.")
     return order_id
 
 # =====================================================
@@ -76,17 +76,17 @@ def check_order_executed(client, order_id):
         return False, 0
 
 # =====================================================
-# 🟢 Limit BUY (a doua acțiune din strategia STB)
+# 🔴 Limit SELL (a doua acțiune din strategia BTS)
 # =====================================================
-def place_limit_buy(client, symbol, amount, price, strategy_label="STB"):
-    """Plasează un ordin de cumpărare LIMIT."""
+def place_limit_sell(client, symbol, amount, price, strategy_label="BTS"):
+    """Plasează un ordin de vânzare LIMIT."""
     def action():
-        order = client.create_limit_order(symbol, 'buy', size=str(amount), price=str(price))
+        order = client.create_limit_order(symbol, 'sell', size=str(amount), price=str(price))
         return order.get('orderId') or order.get('id')
 
     order_id = safe_order(action)
     if order_id:
-        print(f"[{symbol}][{strategy_label}] 🟢 Limit BUY @ {price} (id: {order_id})")
+        print(f"[{symbol}][{strategy_label}] 🔴 Limit SELL @ {price} (id: {order_id})")
     else:
-        print(f"[{symbol}][{strategy_label}] ❌ Limit BUY failed after retries.")
+        print(f"[{symbol}][{strategy_label}] ❌ Limit SELL failed after retries.")
     return order_id
