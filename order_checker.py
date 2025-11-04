@@ -28,11 +28,12 @@ def update_order_status(order_id, new_status, avg_price=None, symbol=None, cycle
 # 🔍 Verificare ordine vechi (ultimele 5)
 # =====================================================
 def check_old_orders(client, symbol):
-    """Verifică ultimele 5 ordine neînchise pentru simbolul dat"""
+    """Verifică ultimele 5 ordine neînchise pentru simbolul dat și strategia BTS"""
     result = (
         supabase.table("orders")
         .select("*")
         .eq("symbol", symbol)
+        .eq("strategy", "BTS")  # ✅ doar pentru strategia Buy-Then-Sell
         .in_("status", ["pending", "open"])
         .order("last_updated", desc=False)
         .limit(5)
@@ -41,7 +42,7 @@ def check_old_orders(client, symbol):
 
     orders = result.data or []
     if not orders:
-        print(f"[{symbol}] ✅ Nicio comandă de verificat.")
+        print(f"[{symbol}][BTS] ✅ Nicio comandă de verificat.")
         return
 
     for order in orders:
@@ -54,10 +55,10 @@ def check_old_orders(client, symbol):
         done, avg_price = check_order_executed(client, order_id)
         if done:
             update_order_status(order_id, "executed", avg_price, symbol, cycle_id)
-            print(f"[{symbol}] ✅ Ordin {side} executat: {order_id} | preț mediu: {avg_price}")
+            print(f"[{symbol}][BTS] ✅ Ordin {side} executat: {order_id} | preț mediu: {avg_price}")
         else:
             update_order_status(order_id, "pending", symbol=symbol)
-            print(f"[{symbol}] ⏳ Ordin {side} încă în așteptare: {order_id}")
+            print(f"[{symbol}][BTS] ⏳ Ordin {side} încă în așteptare: {order_id}")
 
 # =====================================================
 # 🔁 Bucla principală (rulează din oră în oră)
@@ -76,6 +77,10 @@ def run_checker():
 
             for bot in bots:
                 symbol = bot["symbol"]
+                strategy = bot.get("strategy", "").lower()
+                if strategy != "buy_sell":  # ✅ ignoră botii STB (sell_buy)
+                    continue
+
                 api_key = bot["api_key"]
                 api_secret = bot["api_secret"]
                 api_passphrase = bot["api_passphrase"]
