@@ -108,10 +108,10 @@ def update_execution_time_and_profit(cycle_id):
             print(f"⚠️ Missing price data for {cycle_id}")
             return
 
-        # ✅ Profit în procente și în COIN + USDT
+        # ✅ Profit doar în COIN (pentru strategia BUY → SELL)
         profit_percent = round(((sell_price - buy_price) / buy_price) * 100, 2)
         profit_coin = round((sell_price - buy_price) / buy_price * filled_size, 6)
-        profit_usdt = round((sell_price - buy_price) * filled_size, 6)
+        profit_usdt = None  # nu se calculează pentru BTS
 
         # ⏱️ Durata execuției
         execution_time = abs(sell_time - buy_time) if (sell_time and buy_time) else None
@@ -130,7 +130,7 @@ def update_execution_time_and_profit(cycle_id):
             "last_updated": datetime.now(timezone.utc).isoformat(),
         }).execute()
 
-        print(f"💰 [{symbol}] Profit updated: {profit_percent}% → COIN={profit_coin} | USDT={profit_usdt}")
+        print(f"💰 [{symbol}] Profit updated: {profit_percent}% → COIN={profit_coin}")
 
     except Exception as e:
         print(f"❌ Error updating profit for {cycle_id}: {e}")
