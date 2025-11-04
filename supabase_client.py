@@ -108,11 +108,12 @@ def update_execution_time_and_profit(cycle_id):
             print(f"⚠️ Missing price data for {cycle_id}")
             return
 
-        # Profit în COIN (nu în USDT)
-        profit_percent = round(((sell_price - buy_price) / sell_price) * 100, 2)
-        profit_coin = round((sell_price - buy_price) / sell_price * filled_size, 6)
+        # ✅ Profit în procente și în COIN + USDT
+        profit_percent = round(((sell_price - buy_price) / buy_price) * 100, 2)
+        profit_coin = round((sell_price - buy_price) / buy_price * filled_size, 6)
+        profit_usdt = round((sell_price - buy_price) * filled_size, 6)
 
-        # Durata execuției
+        # ⏱️ Durata execuției
         execution_time = abs(sell_time - buy_time) if (sell_time and buy_time) else None
 
         # 🧾 Salvare / actualizare în profit_per_cycle
@@ -124,11 +125,12 @@ def update_execution_time_and_profit(cycle_id):
             "buy_price": buy_price,
             "profit_percent": profit_percent,
             "profit_coin": profit_coin,
+            "profit_usdt": profit_usdt,
             "execution_time": str(execution_time) if execution_time else None,
             "last_updated": datetime.now(timezone.utc).isoformat(),
         }).execute()
 
-        print(f"💰 [{symbol}] Profit updated: {profit_percent}% → COIN={profit_coin}")
+        print(f"💰 [{symbol}] Profit updated: {profit_percent}% → COIN={profit_coin} | USDT={profit_usdt}")
 
     except Exception as e:
         print(f"❌ Error updating profit for {cycle_id}: {e}")
